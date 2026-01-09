@@ -1,0 +1,29 @@
+{
+  "name": "stripe-payment",
+  "version": "1.0.0",
+  "description": "Backend wrapper to integrate stripe payment",
+  "homepage": "https://github.com/tsherpa-sys/stripe-payment#readme",
+  "bugs": {
+    "url": "https://github.com/tsherpa-sys/stripe-payment/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsherpa-sys/stripe-payment.git"
+  },
+  "license": "ISC",
+  "author": "Phur Tenzin Sherpa",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.11",
+    "stripe": "^20.1.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Payment Service API",
+    "version": "1.0.0",
+    "description": "Stripe checkout and webhook service"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/api": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "Service is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Payment service is running 🚀"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/checkout": {
+      "post": {
+        "summary": "Create Stripe Checkout session",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["amount", "description"],
+                "properties": {
+                  "amount": {
+                    "type": "integer",
+                    "description": "Amount in cents",
+                    "example": 2500
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Parking ticket payment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout session created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "example": "https://checkout.stripe.com/c/pay/cs_test_123"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/webhook": {
+      "post": {
+        "summary": "Stripe webhook endpoint",
+        "description": "Receives Stripe events. Must be called by Stripe with a valid signature.",
+        "responses": {
+          "200": {
+            "description": "Event received"
+          },
+          "400": {
+            "description": "Invalid signature"
+          }
+        }
+      }
+    }
+  }
+}

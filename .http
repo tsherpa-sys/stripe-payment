@@ -1,0 +1,8 @@
+### Create Stripe Checkout Session (with payload)
+POST http://localhost:3000/api/checkout
+Content-Type: application/json
+
+{
+  "amount": 100,
+  "description": "Parking Ticket Payment"
+}
