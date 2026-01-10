@@ -7,6 +7,41 @@ const stripe = require("./services/strpe");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  (req, res) => {
+
+
+    console.log(Buffer.isBuffer(req.body)); // must be true)
+    const sig = req.headers["stripe-signature"];
+
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      console.error("Webhook signature failed:", err.message);
+      return res.status(400).send("Webhook Error");
+    }
+
+    console.log("Stripe event:", event.type);
+
+    if (event.type === "checkout.session.completed") {
+      //payment succeded
+      // update the DB or something
+      const session = event.data.object;
+      console.log("Payment confirmed:", session.id);
+    }
+
+    res.json({ received: true });
+  }
+);
+
 // Middleware to parse JSON
 app.use(express.json());
 
@@ -15,8 +50,6 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./docs/swagger.json");
 
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-
 
 // Health check
 app.get("/api", (req, res) => {
@@ -53,35 +86,6 @@ app.post("/api/checkout", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-app.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  (req, res) => {
-    const sig = req.headers["stripe-signature"];
-
-    let event;
-    try {
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET
-      );
-    } catch (err) {
-      console.error("Webhook signature failed:", err.message);
-      return res.status(400).send("Webhook Error");
-    }
-
-    console.log("Stripe event:", event.type);
-
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object;
-      console.log("Payment confirmed:", session.id);
-    }
-
-    res.json({ received: true });
-  }
-);
 
 
 // Start server
