@@ -6,3 +6,7 @@ Content-Type: application/json
   "amount": 199,
   "description": "Parking Ticket Payment"
 }
+
+
+### ping /webhook
+POST http://localhost:3000/webhook
